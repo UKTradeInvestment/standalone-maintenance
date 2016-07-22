@@ -1,0 +1,38 @@
+{
+	"name": "standalone-maintenance",
+	"version": "1.0.0",
+	"description": "Create a stanalone GDS style error/maintenance page",
+	"main": "index.js",
+	"govuk-template-version": "0.18.0",
+	"scripts": {
+		"get-template": "VERSION=$npm_package_govuk_template_version; curl -L https://github.com/alphagov/govuk_template/releases/download/v$VERSION/govuk_template-$VERSION.tgz | tar -zxv",
+		"prepare-template": "VERSION=$npm_package_govuk_template_version; cd govuk_template-${VERSION}; cp views/layouts/govuk_template.html .; node ../replace.js",
+		"check-template": "if [ ! -d govuk_template-${npm_package_govuk_template_version} ]; then npm run get-template && npm run prepare-template; fi",
+		"build-dev": "npm run check-template && npm run copy-src && npm run sass-dev",
+		"build-dist": "npm run check-template && npm run copy-src && npm run sass-prod && npm run copy-dist",
+		"copy-src": "sh copy-src.sh",
+		"copy-dist": "sh copy-dist.sh",
+		"serve-dev": "http-server src -p 3080",
+		"serve-dist": "http-server dist/standalone-maintenance -p 3080",
+		"build-zip": "npm run build-dist && npm run zip",
+		"zip": "cd dist && zip -r standalone-maintenance.zip standalone-maintenance/*",
+		"sass-watch": "sass --style expanded --line-numbers --load-path node_modules/govuk_frontend_toolkit/stylesheets --load-path node_modules/govuk-elements-sass/public/sass --watch src/public/sass/main.scss:src/public/css/main.css",
+		"sass-dev": "sass --style expanded --line-numbers --load-path node_modules/govuk_frontend_toolkit/stylesheets --load-path node_modules/govuk-elements-sass/public/sass src/public/sass/main.scss src/public/css/main.css",
+		"sass-prod": "sass --style compressed --load-path node_modules/govuk_frontend_toolkit/stylesheets --load-path node_modules/govuk-elements-sass/public/sass src/public/sass/main.scss src/public/css/main.css"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/UKTradeInvestment/standalone-maintenance.git"
+	},
+	"author": "Graham Veal",
+		"license": "ISC",
+		"bugs": {
+		"url": "https://github.com/UKTradeInvestment/standalone-maintenance/issues"
+	},
+	"homepage": "https://github.com/UKTradeInvestment/standalone-maintenance#readme",
+	"dependencies": {
+		"govuk-elements-sass": "^1.2.1",
+		"govuk_frontend_toolkit": "^4.14.0",
+		"http-server": "^0.9.0"
+	}
+}
